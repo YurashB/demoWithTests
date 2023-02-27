@@ -1,6 +1,7 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Gender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -49,5 +50,7 @@ public interface EmployeeService {
     List<String> getSortCountry();
 
     Optional<String> findEmails();
+
+    List<Employee> getByGender(Gender gender, String country);
 
 }
