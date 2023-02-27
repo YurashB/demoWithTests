@@ -26,7 +26,6 @@ public class EmployeeReadDto {
 
     public Set<AddressDto> addresses = new HashSet<>();
 
-    //todo: dfhgjkdfhg Jira - 5544
     public Date date = Date.from(Instant.now());
 
     public Gender gender;

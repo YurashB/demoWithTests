@@ -23,7 +23,6 @@ public interface EmployeeService {
 
     void removeAll();
 
-    //Page<Employee> findByCountryContaining(String country, Pageable pageable);
     /**
      * @param country  Filter for the country if required
      * @param page            number of the page returned
