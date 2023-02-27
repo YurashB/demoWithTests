@@ -142,4 +142,17 @@ public class Controller {
     public List<Employee> readByGender(@RequestParam Gender gender, @RequestParam String country) {
         return employeeService.getByGender(gender, country);
     }
+
+    @GetMapping("/users/byCountries")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> readByCountryList(@RequestParam List<String> countries) {
+        System.out.println(countries);
+        return employeeService.getByCountryList(countries);
+    }
+
+    @GetMapping("/users/byCitiesAndName")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> readByCityListAndName(@RequestParam List<String> cities, @RequestParam String name) {
+        return employeeService.getByCityListAndName(cities, name);
+    }
 }
