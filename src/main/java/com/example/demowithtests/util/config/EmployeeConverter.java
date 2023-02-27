@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmployeeConverter {
 
-    private final MapperFacade mapperFacade;
+    private MapperFacade mapperFacade;
 
     public EmployeeConverter(MapperFacade mapperFacade) {
         this.mapperFacade = mapperFacade;
