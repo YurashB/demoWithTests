@@ -53,4 +53,9 @@ public interface EmployeeService {
 
     List<Employee> getByGender(Gender gender, String country);
 
+    List<Employee> getEmployeesWhereIsTestIsNull();
+
+    List<Employee> getEmployeesWhereIsTestIsTrue();
+    
+    List<Employee> getEmployeesWhereIsTestIsFalse();
 }

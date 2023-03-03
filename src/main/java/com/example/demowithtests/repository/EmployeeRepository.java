@@ -26,4 +26,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query(value = "select * from users join addresses on users.id = addresses.employee_id " +
             "where users.gender = :gender and addresses.country = :country", nativeQuery = true)
     List<Employee> findByGender(String gender, String country);
+
+    @Query(value = "select e from Employee e where e.isTest is null")
+    List<Employee> findEmployeesByIsTestIsNull();
+
+    @Query(value = "select e from Employee e where e.isTest is true ")
+    List<Employee> findEmployeesByIsTestIsTrue();
+
+    @Query(value = "select e from Employee e where e.isTest is true ")
+    List<Employee> findEmployeesByIsTestIsFalse();
 }

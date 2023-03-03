@@ -3,8 +3,10 @@ package com.example.demowithtests.service;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.util.exception.EntityFieldIsTestIsNullException;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
+import com.example.demowithtests.util.exception.UserTryToAccessToTestEntityException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,11 +50,14 @@ public class EmployeeServiceBean implements EmployeeService {
     @Override
     public Employee getById(Integer id) {
         var employee = employeeRepository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceNotFoundException::new);
-         /*if (employee.getIsDeleted()) {
-            throw new EntityNotFoundException("Employee was deleted with id = " + id);
-        }*/
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+
+        if (employee.getIsTest()) {
+            throw new UserTryToAccessToTestEntityException("User try to access to employee with id: " + id
+            + " where isTest field is true");
+        } else if (employee.getIsTest() == null) {
+            throw new EntityFieldIsTestIsNullException("Employee with id: " + id + " has isTest == null");
+        }
         return employee;
     }
 
@@ -156,5 +161,36 @@ public class EmployeeServiceBean implements EmployeeService {
     public List<Employee> getByGender(Gender gender, String country) {
         var employees = employeeRepository.findByGender(gender.toString(), country);
         return employees;
+    }
+
+    @Override
+    public List<Employee> getEmployeesWhereIsTestIsNull() {
+        var employees = employeeRepository.findEmployeesByIsTestIsNull();
+
+        for (Employee employee : employees) {
+            if (employeeIsTest(employee)) {
+                employee.setIsTest(Boolean.TRUE);
+            } else {
+                employee.setIsTest(Boolean.TRUE);
+            }
+        }
+
+        employeeRepository.saveAll(employees);
+
+        return employees;
+    }
+
+    private boolean employeeIsTest(Employee employee) {
+        return employee.getName().toLowerCase().contains("test");
+    }
+
+    @Override
+    public List<Employee> getEmployeesWhereIsTestIsTrue() {
+        return employeeRepository.findEmployeesByIsTestIsTrue();
+    }
+
+    @Override
+    public List<Employee> getEmployeesWhereIsTestIsFalse() {
+        return employeeRepository.findEmployeesByIsTestIsFalse();
     }
 }
