@@ -1,7 +1,9 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,10 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeServiceBean implements EmployeeService {
 
+    private final EmployeeMapper employeeMapper;
     private final EmployeeRepository employeeRepository;
+
+
 
     @Override
     public Employee create(Employee employee) {
@@ -37,11 +42,12 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
-    public Page<Employee> getAllWithPagination(Pageable pageable) {
-        log.debug("getAllWithPagination() - start: pageable = {}", pageable);
+    public Page<EmployeeDto> getAllWithPagination(Pageable pageable) {
+       // log.debug("getAllWithPagination() - start: pageable = {}", pageable);
         Page<Employee> list = employeeRepository.findAll(pageable);
-        log.debug("getAllWithPagination() - end: list = {}", list);
-        return list;
+        Page<EmployeeDto> dtoList = list.map(employeeMapper::ToDto);
+       // log.debug("getAllWithPagination() - end: list = {}", list);
+        return dtoList;
     }
 
     @Override
@@ -89,11 +95,13 @@ public class EmployeeServiceBean implements EmployeeService {
     }*/
 
     @Override
-    public Page<Employee> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder) {
+    public Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder) {
         // create Pageable object using the page, size and sort details
         Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
         // fetch the page object by additionally passing pageable with the filters
-        return employeeRepository.findByCountryContaining(country, pageable);
+        Page<Employee> list = employeeRepository.findByCountryContaining(country, pageable);
+        Page<EmployeeDto> dtoList = list.map(employeeMapper::ToDto);
+        return dtoList;
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
@@ -112,7 +120,7 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<String> getAllEmployeeCountry() {
-        log.info("getAllEmployeeCountry() - start:");
+        //log.info("getAllEmployeeCountry() - start:");
         List<Employee> employeeList = employeeRepository.findAll();
         List<String> countries = employeeList.stream()
                 .map(country -> country.getCountry())
@@ -122,7 +130,7 @@ public class EmployeeServiceBean implements EmployeeService {
                 //.sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());*/
 
-        log.info("getAllEmployeeCountry() - end: countries = {}", countries);
+       // log.info("getAllEmployeeCountry() - end: countries = {}", countries);
         return countries;
     }
 

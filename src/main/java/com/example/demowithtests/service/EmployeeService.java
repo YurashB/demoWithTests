@@ -1,6 +1,7 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.dto.EmployeeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +14,7 @@ public interface EmployeeService {
 
     List<Employee> getAll();
 
-    Page<Employee> getAllWithPagination(Pageable pageable);
+    Page<EmployeeDto> getAllWithPagination(Pageable pageable);
 
     Employee getById(Integer id);
 
@@ -31,7 +32,7 @@ public interface EmployeeService {
      * @param sortOrder       sort order. Can be ASC or DESC
      * @return Page object with customers after filtering and sorting
      */
-    Page<Employee> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
+    Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
 
     /**
      * Get all the countries of all the employees.
