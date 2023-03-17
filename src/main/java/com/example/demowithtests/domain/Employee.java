@@ -1,5 +1,6 @@
 package com.example.demowithtests.domain;
 
+import com.example.demowithtests.util.annotation.EmployeeCountry;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Employee {
 
     private String name;
 
+    @EmployeeCountry
     private String country;
 
     private String email;
@@ -31,5 +33,7 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private String identifier;
 
 }

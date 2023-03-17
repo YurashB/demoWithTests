@@ -43,7 +43,7 @@ public class Controller {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
-
+        System.out.println(requestForSave);
         var employee = employeeMapper.toModel(requestForSave);
         var dto = employeeMapper.ToDto(employeeService.create(employee));
 
