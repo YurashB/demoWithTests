@@ -29,5 +29,7 @@ public class EmployeeDto {
 
     public Set<AddressDto> addresses = new HashSet<>();
 
+    public Set<PhotoDto> photos = new HashSet<>();
+
     public Gender gender;
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+@ToString
 public class Employee {
 
     @Id
@@ -31,5 +32,9 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private Set<Photo> photos = new HashSet<>();
 
 }

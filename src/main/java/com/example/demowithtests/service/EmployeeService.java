@@ -2,6 +2,7 @@ package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.dto.PhotoDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -49,5 +50,9 @@ public interface EmployeeService {
     List<String> getSortCountry();
 
     Optional<String> findEmails();
+
+    List<EmployeeDto> findEmployeesWthExpiredPhotos();
+
+    EmployeeDto addEmployeePhoto(int employeeIs, PhotoDto photoDto);
 
 }
