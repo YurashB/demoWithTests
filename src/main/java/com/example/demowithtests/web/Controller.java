@@ -1,6 +1,7 @@
 package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeService;
@@ -134,5 +135,24 @@ public class Controller {
     @ResponseStatus(HttpStatus.OK)
     public Optional<String> getAllUsersSo() {
         return employeeService.findEmails();
+    }
+
+    @GetMapping("/users/byGenderAndCountry")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> readByGender(@RequestParam Gender gender, @RequestParam String country) {
+        return employeeService.getByGender(gender, country);
+    }
+
+    @GetMapping("/users/byCountries")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> readByCountryList(@RequestParam List<String> countries) {
+        System.out.println(countries);
+        return employeeService.getByCountryList(countries);
+    }
+
+    @GetMapping("/users/byCitiesAndName")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> readByCityListAndName(@RequestParam List<String> cities, @RequestParam String name) {
+        return employeeService.getByCityListAndName(cities, name);
     }
 }

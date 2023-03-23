@@ -1,9 +1,11 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Gender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,4 +51,9 @@ public interface EmployeeService {
 
     Optional<String> findEmails();
 
+    List<Employee> getByGender(Gender gender, String country);
+
+    List<Employee> getByCountryList(Collection<String> countries);
+
+    List<Employee> getByCityListAndName(Collection<String> cities, String name);
 }

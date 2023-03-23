@@ -1,6 +1,7 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -149,5 +147,21 @@ public class EmployeeServiceBean implements EmployeeService {
                 .findFirst()
                 .orElse("error?");
         return Optional.ofNullable(opt);
+    }
+
+    @Override
+    public List<Employee> getByGender(Gender gender, String country) {
+        var employees = employeeRepository.findByGender(gender.toString(), country);
+        return employees;
+    }
+
+    @Override
+    public List<Employee> getByCountryList(Collection<String> countries) {
+        return employeeRepository.findByCountryList(countries);
+    }
+
+    @Override
+    public List<Employee> getByCityListAndName(Collection<String> cities, String name) {
+        return employeeRepository.findByCityListAndName(cities, name);
     }
 }
