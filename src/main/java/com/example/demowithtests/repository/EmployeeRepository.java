@@ -26,6 +26,16 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "where users.gender = :gender and addresses.country = :country", nativeQuery = true)
     List<Employee> findByGender(String gender, String country);
 
+    /*
+        Using SQL
+        @Query(value = "select * from users u where u.country in ?1", nativeQuery = true)
+        List<Employee> findByCountryList(Collection<String> countries);
+
+        @Query(value = "select * from users u join addresses a on u.id = a.employee_id " +
+                "where u.name = ?2 and a.city in ?1", nativeQuery = true)
+        List<Employee> findByCityListAndName(Collection<String> cities, String name);
+
+     */
     @Query(value = "select e from Employee e where e.country in :countries order by e.name asc ")
     List<Employee> findByCountryList(@Param("countries")Collection<String> countries);
 
@@ -34,10 +44,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "order by e.name asc")
     List<Employee> findByCityListAndName(@Param("cities")Collection<String> cities, @Param("name")String name);
 
-    @Query(value = "select * from users u where u.country in ?1", nativeQuery = true)
-    List<Employee> findByCountryList(Collection<String> countries);
 
-    @Query(value = "select * from users u join addresses a on u.id = a.employee_id " +
-            "where u.name = ?2 and a.city in ?1", nativeQuery = true)
-    List<Employee> findByCityListAndName(Collection<String> cities, String name);
 }
