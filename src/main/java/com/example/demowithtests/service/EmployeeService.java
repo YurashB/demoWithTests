@@ -56,4 +56,9 @@ public interface EmployeeService {
     List<Employee> getByCountryList(Collection<String> countries);
 
     List<Employee> getByCityListAndName(Collection<String> cities, String name);
+    List<Employee> getEmployeesWhereIsTestIsNull();
+
+    List<Employee> getEmployeesWhereIsTestIsTrue();
+
+    List<Employee> getEmployeesWhereIsTestIsFalse();
 }

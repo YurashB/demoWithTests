@@ -32,4 +32,6 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private Boolean isTest = Boolean.FALSE;
+
 }

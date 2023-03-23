@@ -45,4 +45,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByCityListAndName(@Param("cities")Collection<String> cities, @Param("name")String name);
 
 
+
+    @Query(value = "select e from Employee e where e.isTest is null")
+    List<Employee> findEmployeesByIsTestIsNull();
+
+    @Query(value = "select e from Employee e where e.isTest is true ")
+    List<Employee> findEmployeesByIsTestIsTrue();
+
+    @Query(value = "select e from Employee e where e.isTest is true ")
+    List<Employee> findEmployeesByIsTestIsFalse();
 }
