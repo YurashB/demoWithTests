@@ -56,7 +56,7 @@ public class Controller {
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeDto> getAllUsers() {
-        return employeeMapper.ToDtoList(employeeService.getAll());
+        return employeeService.getAll();
     }
 
     @GetMapping("/users/p")
@@ -77,13 +77,12 @@ public class Controller {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
-    public EmployeeReadDto getEmployeeById(@PathVariable Integer id) {
+    public EmployeeDto getEmployeeById(@PathVariable Integer id) {
         //log.debug("getEmployeeById() Controller - start: id = {}", id);
         var employee = employeeService.getById(id);
         //log.debug("getById() Controller - to dto start: id = {}", id);
-        var dto = employeeMapper.toReadDto(employee);
         //log.debug("getEmployeeById() Controller - end: name = {}", dto.name);
-        return dto;
+        return employee;
     }
 
     //Обновление юзера
@@ -91,7 +90,7 @@ public class Controller {
     @ResponseStatus(HttpStatus.OK)
     public EmployeeDto refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
 
-        return employeeMapper.ToDto(employeeService.updateById(id, employee));
+        return employeeService.updateById(id, employee);
     }
 
     //Удаление по id
@@ -122,7 +121,7 @@ public class Controller {
 
     @GetMapping("/users/c")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getAllUsersC() {
+    public List<String> getAllUsersCountry() {
         return employeeService.getAllEmployeeCountry();
     }
 
@@ -138,29 +137,10 @@ public class Controller {
         return employeeService.findEmails();
     }
 
-    @GetMapping("/users/byGenderAndCountry")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Employee> readByGender(@RequestParam Gender gender, @RequestParam String country) {
-        return employeeService.getByGender(gender, country);
-    }
-
-    @GetMapping("/users/byCountries")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Employee> readByCountryList(@RequestParam List<String> countries) {
-        System.out.println(countries);
-        return employeeService.getByCountryList(countries);
-    }
-
-    @GetMapping("/users/byCitiesAndName")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Employee> readByCityListAndName(@RequestParam List<String> cities, @RequestParam String name) {
-        return employeeService.getByCityListAndName(cities, name);
-    }
-
     @GetMapping("/users/with-expired-photos")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeDto> getUsersWithExpiredPhotos() {
-        return employeeService.findEmployeesWthExpiredPhotos();
+        return employeeService.findEmployeesWithExpiredPhotos();
     }
 
     @PatchMapping("/users/{id}/photo")

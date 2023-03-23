@@ -1,9 +1,6 @@
 package com.example.demowithtests.dto;
 
 
-import java.time.Instant;
-import java.util.Date;
-
 public class AddressDto {
 
     public Long id;

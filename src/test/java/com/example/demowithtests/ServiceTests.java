@@ -1,6 +1,7 @@
 package com.example.demowithtests;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.service.EmployeeServiceBean;
 import org.junit.Ignore;
@@ -49,7 +50,7 @@ public class ServiceTests {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
 
-        Employee expected = service.getById(employee.getId());
+        EmployeeDto expected = service.getById(employee.getId());
 
         assertThat(expected).isSameAs(employee);
         verify(employeeRepository).findById(employee.getId());

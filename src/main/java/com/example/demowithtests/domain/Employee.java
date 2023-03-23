@@ -1,6 +1,7 @@
 package com.example.demowithtests.domain;
 
 import com.example.demowithtests.util.annotation.EmployeeCountry;
+import com.example.demowithtests.util.annotation.EmployeeIdentifier;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ import java.util.Set;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     private String name;
@@ -35,12 +36,13 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @EmployeeIdentifier
     private String identifier;
-
-    private Boolean isTest = Boolean.FALSE;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     private Set<Photo> photos = new HashSet<>();
+
+    private Boolean isDeleted = Boolean.FALSE;
 
 }

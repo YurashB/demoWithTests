@@ -1,14 +1,13 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.util.config.mapstruct.PhotoMapper;
-import com.example.demowithtests.util.exception.ResourceNotFoundException;
+import com.example.demowithtests.util.exception.EntityFieldIsDeletedIsNullException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,50 +32,49 @@ public class EmployeeServiceBean implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
 
-
     @Override
     public Employee create(Employee employee) {
         return employeeRepository.save(employee);
     }
 
     @Override
-    public List<Employee> getAll() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAll() {
+        return employeeMapper.ToDtoList(employeeRepository.findAll());
     }
 
     @Override
     public Page<EmployeeDto> getAllWithPagination(Pageable pageable) {
         // log.debug("getAllWithPagination() - start: pageable = {}", pageable);
         Page<Employee> list = employeeRepository.findAll(pageable);
-        Page<EmployeeDto> dtoList = list.map(employeeMapper::ToDto);
         // log.debug("getAllWithPagination() - end: list = {}", list);
-        return dtoList;
+        return list.map(employeeMapper::ToDto);
     }
 
     @Override
-    public Employee getById(Integer id) {
+    public EmployeeDto getById(Integer id) {
         var employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
 
-        if (employee.getIsTest()) {
-            throw new UserTryToAccessToTestEntityException("User try to access to employee with id: " + id
-            + " where isTest field is true");
-        } else if (employee.getIsTest() == null) {
-            throw new EntityFieldIsTestIsNullException("Employee with id: " + id + " has isTest == null");
+
+        if (employee.getIsDeleted() == null) {
+            employee.setIsDeleted(Boolean.TRUE);
+        } else if (employee.getIsDeleted()) {
+            throw new EntityNotFoundException("User try to access to deleted employee with id: " + id
+                    + " where isDeleted field is true");
         }
-        return employee;
+        return employeeMapper.ToDto(employee);
     }
 
     @Override
-    public Employee updateById(Integer id, Employee employee) {
-        return employeeRepository.findById(id)
+    public EmployeeDto updateById(Integer id, Employee employee) {
+        return employeeMapper.ToDto(employeeRepository.findById(id)
                 .map(entity -> {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
                     entity.setCountry(employee.getCountry());
                     return employeeRepository.save(entity);
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id)));
     }
 
     @Override
@@ -96,19 +93,14 @@ public class EmployeeServiceBean implements EmployeeService {
         employeeRepository.deleteAll();
     }
 
-    /*@Override
-    public Page<Employee> findByCountryContaining(String country, Pageable pageable) {
-        return employeeRepository.findByCountryContaining(country, pageable);
-    }*/
-
     @Override
-    public Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder) {
+    public Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<
+            String> sortList, String sortOrder) {
         // create Pageable object using the page, size and sort details
         Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
         // fetch the page object by additionally passing pageable with the filters
         Page<Employee> list = employeeRepository.findByCountryContaining(country, pageable);
-        Page<EmployeeDto> dtoList = list.map(employeeMapper::ToDto);
-        return dtoList;
+        return list.map(employeeMapper::ToDto);
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
@@ -132,11 +124,6 @@ public class EmployeeServiceBean implements EmployeeService {
         List<String> countries = employeeList.stream()
                 .map(country -> country.getCountry())
                 .collect(Collectors.toList());
-        /*List<String> countries = employeeList.stream()
-                .map(Employee::getCountry)
-                //.sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());*/
-
         // log.info("getAllEmployeeCountry() - end: countries = {}", countries);
         return countries;
     }
@@ -167,55 +154,7 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getByGender(Gender gender, String country) {
-        var employees = employeeRepository.findByGender(gender.toString(), country);
-        return employees;
-    }
-
-    @Override
-    public List<Employee> getByCountryList(Collection<String> countries) {
-        return employeeRepository.findByCountryList(countries);
-    }
-
-    @Override
-    public List<Employee> getByCityListAndName(Collection<String> cities, String name) {
-        return employeeRepository.findByCityListAndName(cities, name);
-    }
-
-    @Override
-    public List<Employee> getEmployeesWhereIsTestIsNull() {
-        var employees = employeeRepository.findEmployeesByIsTestIsNull();
-
-        for (Employee employee : employees) {
-            if (employeeIsTest(employee)) {
-                employee.setIsTest(Boolean.TRUE);
-            } else {
-                employee.setIsTest(Boolean.TRUE);
-            }
-        }
-
-        employeeRepository.saveAll(employees);
-
-        return employees;
-    }
-
-    private boolean employeeIsTest(Employee employee) {
-        return employee.getName().toLowerCase().contains("test");
-    }
-
-    @Override
-    public List<Employee> getEmployeesWhereIsTestIsTrue() {
-        return employeeRepository.findEmployeesByIsTestIsTrue();
-    }
-
-    @Override
-    public List<Employee> getEmployeesWhereIsTestIsFalse() {
-        return employeeRepository.findEmployeesByIsTestIsFalse();
-    }
-}
-
-    @Override
-    public List<EmployeeDto> findEmployeesWthExpiredPhotos() {
+    public List<EmployeeDto> findEmployeesWithExpiredPhotos() {
         List<Employee> employees = employeeRepository.findAll();
         Comparator<Photo> photoComparator = Comparator.comparing(Photo::getAddDate);
         List<Employee> employeeWithExpiredPhotos = new ArrayList<>();
@@ -224,7 +163,7 @@ public class EmployeeServiceBean implements EmployeeService {
             TreeSet<Photo> photos = new TreeSet<>(photoComparator);
             photos.addAll(employee.getPhotos());
 
-            if (!photos.isEmpty() && photos.last().getAddDate().isBefore(LocalDate.now().plusDays(8).minusYears(5))) {
+            if (!photos.isEmpty() && photos.last().getAddDate().isBefore(LocalDateTime.now().plusDays(8).minusYears(5))) {
                 employeeWithExpiredPhotos.add(employee);
             }
         }
