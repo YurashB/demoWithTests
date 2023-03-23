@@ -5,7 +5,7 @@ import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeService;
-import com.example.demowithtests.util.config.EmployeeConverter;
+import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,7 +32,7 @@ import java.util.Optional;
 public class Controller {
 
     private final EmployeeService employeeService;
-    private final EmployeeConverter converter;
+    private final EmployeeMapper employeeMapper;
 
     //Операция сохранения юзера в базу данных
     @PostMapping("/users")
@@ -45,8 +45,8 @@ public class Controller {
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
 
-        var employee = converter.getMapperFacade().map(requestForSave, Employee.class);
-        var dto = converter.toDto(employeeService.create(employee));
+        var employee = employeeMapper.toModel(requestForSave);
+        var dto = employeeMapper.ToDto(employeeService.create(employee));
 
         return dto;
     }
@@ -54,17 +54,17 @@ public class Controller {
     //Получение списка юзеров
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getAllUsers() {
-        return employeeService.getAll();
+    public List<EmployeeDto> getAllUsers() {
+        return employeeMapper.ToDtoList(employeeService.getAll());
     }
 
     @GetMapping("/users/p")
     @ResponseStatus(HttpStatus.OK)
-    public Page<Employee> getPage(@RequestParam(defaultValue = "0") int page,
+    public Page<EmployeeDto> getPage(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "5") int size
     ) {
         Pageable paging = PageRequest.of(page, size);
-        return employeeService.getAllWithPagination(paging);
+        return (employeeService.getAllWithPagination(paging));
     }
 
     //Получения юзера по id
@@ -77,20 +77,20 @@ public class Controller {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeReadDto getEmployeeById(@PathVariable Integer id) {
-        log.debug("getEmployeeById() Controller - start: id = {}", id);
+        //log.debug("getEmployeeById() Controller - start: id = {}", id);
         var employee = employeeService.getById(id);
-        log.debug("getById() Controller - to dto start: id = {}", id);
-        var dto = converter.toReadDto(employee);
-        log.debug("getEmployeeById() Controller - end: name = {}", dto.name);
+        //log.debug("getById() Controller - to dto start: id = {}", id);
+        var dto = employeeMapper.toReadDto(employee);
+        //log.debug("getEmployeeById() Controller - end: name = {}", dto.name);
         return dto;
     }
 
     //Обновление юзера
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Employee refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
+    public EmployeeDto refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
 
-        return employeeService.updateById(id, employee);
+        return employeeMapper.ToDto(employeeService.updateById(id, employee));
     }
 
     //Удаление по id
@@ -109,7 +109,7 @@ public class Controller {
 
     @GetMapping("/users/country")
     @ResponseStatus(HttpStatus.OK)
-    public Page<Employee> findByCountry(@RequestParam(required = false) String country,
+    public Page<EmployeeDto> findByCountry(@RequestParam(required = false) String country,
                                         @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "3") int size,
                                         @RequestParam(defaultValue = "") List<String> sortList,

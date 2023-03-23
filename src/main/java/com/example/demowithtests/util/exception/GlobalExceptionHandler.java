@@ -23,10 +23,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ResourceWasDeletedException.class)
-    protected ResponseEntity<MyGlobalExceptionHandler> handleDeleteException() {
-        return new ResponseEntity<>(new MyGlobalExceptionHandler("This user was deleted"), HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler(ResourceWasDeletedException.class)
+//    protected ResponseEntity<MyGlobalExceptionHandler> handleDeleteException() {
+//        return new ResponseEntity<>(new MyGlobalExceptionHandler("This user was deleted"), HttpStatus.NOT_FOUND);
+//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> globleExcpetionHandler(Exception ex, WebRequest request) {

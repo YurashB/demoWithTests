@@ -15,7 +15,7 @@ public interface EmployeeService {
 
     List<Employee> getAll();
 
-    Page<Employee> getAllWithPagination(Pageable pageable);
+    Page<EmployeeDto> getAllWithPagination(Pageable pageable);
 
     Employee getById(Integer id);
 
@@ -33,7 +33,7 @@ public interface EmployeeService {
      * @param sortOrder       sort order. Can be ASC or DESC
      * @return Page object with customers after filtering and sorting
      */
-    Page<Employee> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
+    Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
 
     /**
      * Get all the countries of all the employees.
