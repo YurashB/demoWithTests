@@ -1,6 +1,8 @@
 package com.example.demowithtests.dto;
 
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.Photo;
+import com.example.demowithtests.util.annotation.EmployeeIdentifier;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
@@ -26,9 +28,10 @@ public class EmployeeReadDto {
 
     public Set<AddressDto> addresses = new HashSet<>();
 
-    public Date date = Date.from(Instant.now());
-
     public Gender gender;
 
-    public Boolean isTest;
+    @EmployeeIdentifier
+    private String identifier;
+
+    private Set<Photo> photos = new HashSet<>();
 }

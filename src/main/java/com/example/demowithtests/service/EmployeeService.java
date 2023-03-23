@@ -15,13 +15,13 @@ public interface EmployeeService {
 
     Employee create(Employee employee);
 
-    List<Employee> getAll();
+    List<EmployeeDto> getAll();
 
     Page<EmployeeDto> getAllWithPagination(Pageable pageable);
 
-    Employee getById(Integer id);
+    EmployeeDto getById(Integer id);
 
-    Employee updateById(Integer id, Employee plane);
+    EmployeeDto updateById(Integer id, Employee plane);
 
     void removeById(Integer id);
 
@@ -37,33 +37,13 @@ public interface EmployeeService {
      */
     Page<EmployeeDto> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
 
-    /**
-     * Get all the countries of all the employees.
-     *
-     * @return A list of all the countries that employees are from.
-     */
     List<String> getAllEmployeeCountry();
 
-    /**
-     * It returns a list of countries sorted by name.
-     *
-     * @return A list of countries in alphabetical order.
-     */
     List<String> getSortCountry();
 
     Optional<String> findEmails();
 
-    List<Employee> getByGender(Gender gender, String country);
-
-    List<Employee> getByCountryList(Collection<String> countries);
-
-    List<Employee> getByCityListAndName(Collection<String> cities, String name);
-    List<Employee> getEmployeesWhereIsTestIsNull();
-
-    List<Employee> getEmployeesWhereIsTestIsTrue();
-
-    List<Employee> getEmployeesWhereIsTestIsFalse();
-    List<EmployeeDto> findEmployeesWthExpiredPhotos();
+    List<EmployeeDto> findEmployeesWithExpiredPhotos();
 
     EmployeeDto addEmployeePhoto(int employeeIs, PhotoDto photoDto);
 
