@@ -33,4 +33,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "where e.name = :name and a.city in :cities " +
             "order by e.name asc")
     List<Employee> findByCityListAndName(@Param("cities")Collection<String> cities, @Param("name")String name);
+
+    @Query(value = "select * from users u where u.country in ?1", nativeQuery = true)
+    List<Employee> findByCountryList(Collection<String> countries);
+
+    @Query(value = "select * from users u join addresses a on u.id = a.employee_id " +
+            "where u.name = ?2 and a.city in ?1", nativeQuery = true)
+    List<Employee> findByCityListAndName(Collection<String> cities, String name);
 }
