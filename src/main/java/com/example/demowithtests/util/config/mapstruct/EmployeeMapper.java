@@ -16,6 +16,7 @@ public interface EmployeeMapper {
     EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
     @Mapping(source = "addresses", target = "addresses")
+    @Mapping(source = "photos", target = "photos")
     EmployeeDto ToDto(Employee employee);
 
     Employee toModel(EmployeeDto employeeDto);

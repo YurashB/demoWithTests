@@ -35,5 +35,7 @@ public class EmployeeDto {
     public String identifier;
 
 
+    public Set<PhotoDto> photos = new HashSet<>();
+
     public Gender gender;
 }

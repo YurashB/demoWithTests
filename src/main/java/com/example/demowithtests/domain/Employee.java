@@ -14,6 +14,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+@ToString
 public class Employee {
 
     @Id
@@ -37,5 +38,9 @@ public class Employee {
     private String identifier;
 
     private Boolean isTest = Boolean.FALSE;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private Set<Photo> photos = new HashSet<>();
 
 }

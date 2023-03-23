@@ -2,9 +2,12 @@ package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
+import com.example.demowithtests.util.config.mapstruct.PhotoMapper;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -25,6 +30,7 @@ import java.util.stream.Collectors;
 public class EmployeeServiceBean implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
+    private final PhotoMapper photoMapper;
     private final EmployeeRepository employeeRepository;
 
 
@@ -41,10 +47,10 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public Page<EmployeeDto> getAllWithPagination(Pageable pageable) {
-       // log.debug("getAllWithPagination() - start: pageable = {}", pageable);
+        // log.debug("getAllWithPagination() - start: pageable = {}", pageable);
         Page<Employee> list = employeeRepository.findAll(pageable);
         Page<EmployeeDto> dtoList = list.map(employeeMapper::ToDto);
-       // log.debug("getAllWithPagination() - end: list = {}", list);
+        // log.debug("getAllWithPagination() - end: list = {}", list);
         return dtoList;
     }
 
@@ -131,7 +137,7 @@ public class EmployeeServiceBean implements EmployeeService {
                 //.sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());*/
 
-       // log.info("getAllEmployeeCountry() - end: countries = {}", countries);
+        // log.info("getAllEmployeeCountry() - end: countries = {}", countries);
         return countries;
     }
 
@@ -205,5 +211,36 @@ public class EmployeeServiceBean implements EmployeeService {
     @Override
     public List<Employee> getEmployeesWhereIsTestIsFalse() {
         return employeeRepository.findEmployeesByIsTestIsFalse();
+    }
+}
+
+    @Override
+    public List<EmployeeDto> findEmployeesWthExpiredPhotos() {
+        List<Employee> employees = employeeRepository.findAll();
+        Comparator<Photo> photoComparator = Comparator.comparing(Photo::getAddDate);
+        List<Employee> employeeWithExpiredPhotos = new ArrayList<>();
+
+        for (Employee employee : employees) {
+            TreeSet<Photo> photos = new TreeSet<>(photoComparator);
+            photos.addAll(employee.getPhotos());
+
+            if (!photos.isEmpty() && photos.last().getAddDate().isBefore(LocalDate.now().plusDays(8).minusYears(5))) {
+                employeeWithExpiredPhotos.add(employee);
+            }
+        }
+
+        return employeeMapper.ToDtoList(employeeWithExpiredPhotos);
+    }
+
+    @Override
+    public EmployeeDto addEmployeePhoto(int employeeId, PhotoDto photoDto) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new com.example.demowithtests.util.exception.EntityNotFoundException(new Employee(), employeeId));
+
+        Photo photo = photoMapper.toModel(photoDto);
+
+        employee.getPhotos().add(photo);
+
+        return employeeMapper.ToDto(employeeRepository.save(employee));
     }
 }

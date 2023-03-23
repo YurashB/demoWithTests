@@ -4,6 +4,7 @@ import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,7 +45,7 @@ public class Controller {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
-        System.out.println(requestForSave);
+
         var employee = employeeMapper.toModel(requestForSave);
         var dto = employeeMapper.ToDto(employeeService.create(employee));
 
@@ -155,4 +156,17 @@ public class Controller {
     public List<Employee> readByCityListAndName(@RequestParam List<String> cities, @RequestParam String name) {
         return employeeService.getByCityListAndName(cities, name);
     }
+
+    @GetMapping("/users/with-expired-photos")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeDto> getUsersWithExpiredPhotos() {
+        return employeeService.findEmployeesWthExpiredPhotos();
+    }
+
+    @PatchMapping("/users/{id}/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeDto addNewPhotoToUser(@PathVariable int id, @RequestBody PhotoDto requestPhoto) {
+        return employeeService.addEmployeePhoto(id, requestPhoto);
+    }
+
 }
