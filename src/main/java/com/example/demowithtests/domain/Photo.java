@@ -30,4 +30,8 @@ public class Photo {
     @NotNull
     @PhotoUrl
     private String photoUrl;
+
+    private boolean isDeleted = Boolean.FALSE;
+
+    private boolean isMain = Boolean.TRUE;
 }
