@@ -4,15 +4,14 @@ import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.util.annotation.EmployeeIdentifier;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.Instant;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
+@Setter
 public class EmployeeReadDto {
 
     @NotNull(message = "Name may not be null")
@@ -31,7 +30,8 @@ public class EmployeeReadDto {
     public Gender gender;
 
     @EmployeeIdentifier
-    private String identifier;
+    public String identifier;
 
-    private Set<Photo> photos = new HashSet<>();
+    public Photo photo;
+
 }

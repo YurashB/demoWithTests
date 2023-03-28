@@ -2,12 +2,13 @@ package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Photo;
+import com.example.demowithtests.domain.PhotoType;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.util.config.mapstruct.PhotoMapper;
-import com.example.demowithtests.util.exception.EntityFieldIsDeletedIsNullException;
+import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -172,14 +175,38 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto addEmployeePhoto(int employeeId, PhotoDto photoDto) {
+    public EmployeeDto addEmployeePhoto(int employeeId, MultipartFile multipartFile) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new com.example.demowithtests.util.exception.EntityNotFoundException(new Employee(), employeeId));
+        if (multipartFile.isEmpty()) throw new ResourceNotFoundException("Photo of employee not found or empty");
+
+        try {
+            Photo photo = new Photo();
+            photo.setPhotoType(PhotoType.getType(Objects.requireNonNull(multipartFile.getContentType())));
+            photo.setAddDate(LocalDateTime.now());
+            photo.setImage(multipartFile.getBytes());
+
+            employee.getPhotos().add(photo);
+            Employee save = employeeRepository.save(employee);
+            return employeeMapper.ToDto(save);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Something go wrong when add photo");
+        }
+    }
+
+    @Override
+    public PhotoDto getEmployeePhoto(int employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new com.example.demowithtests.util.exception.EntityNotFoundException(new Employee(), employeeId));
 
-        Photo photo = photoMapper.toModel(photoDto);
+        Optional<Photo> photo = employee.getPhotos().stream().max(Comparator.comparing(Photo::getAddDate));
 
-        employee.getPhotos().add(photo);
+        if (photo.isPresent()) {
+            return photoMapper.toDto(photo.get());
+        } else {
+            throw new ResourceNotFoundException("There is no any photo in employee with id: " + employeeId);
+        }
 
-        return employeeMapper.ToDto(employeeRepository.save(employee));
     }
 }

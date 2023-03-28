@@ -1,9 +1,8 @@
 package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.dto.EmployeeDto;
-import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
@@ -20,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,7 +52,6 @@ public class Controller {
         return dto;
     }
 
-    //Получение списка юзеров
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeDto> getAllUsers() {
@@ -62,13 +61,12 @@ public class Controller {
     @GetMapping("/users/p")
     @ResponseStatus(HttpStatus.OK)
     public Page<EmployeeDto> getPage(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "5") int size
+                                     @RequestParam(defaultValue = "5") int size
     ) {
         Pageable paging = PageRequest.of(page, size);
         return (employeeService.getAllWithPagination(paging));
     }
 
-    //Получения юзера по id
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "This is endpoint returned a employee by his id.", description = "Create request to read a employee by id", tags = {"Employee"})
@@ -78,11 +76,7 @@ public class Controller {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto getEmployeeById(@PathVariable Integer id) {
-        //log.debug("getEmployeeById() Controller - start: id = {}", id);
-        var employee = employeeService.getById(id);
-        //log.debug("getById() Controller - to dto start: id = {}", id);
-        //log.debug("getEmployeeById() Controller - end: name = {}", dto.name);
-        return employee;
+        return employeeService.getById(id);
     }
 
     //Обновление юзера
@@ -110,10 +104,10 @@ public class Controller {
     @GetMapping("/users/country")
     @ResponseStatus(HttpStatus.OK)
     public Page<EmployeeDto> findByCountry(@RequestParam(required = false) String country,
-                                        @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "3") int size,
-                                        @RequestParam(defaultValue = "") List<String> sortList,
-                                        @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "3") int size,
+                                           @RequestParam(defaultValue = "") List<String> sortList,
+                                           @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
         //Pageable paging = PageRequest.of(page, size);
         //Pageable paging = PageRequest.of(page, size, Sort.by("name").ascending());
         return employeeService.findByCountryContaining(country, page, size, sortList, sortOrder.toString());
@@ -143,10 +137,15 @@ public class Controller {
         return employeeService.findEmployeesWithExpiredPhotos();
     }
 
-    @PatchMapping("/users/{id}/photo")
+    @PostMapping("/users/{id}/photo")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto addNewPhotoToUser(@PathVariable int id, @RequestBody PhotoDto requestPhoto) {
+    public EmployeeDto addNewPhotoToUser(@PathVariable int id, @RequestParam("file") MultipartFile requestPhoto) {
         return employeeService.addEmployeePhoto(id, requestPhoto);
     }
 
+    @GetMapping("/users/{id}/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public PhotoDto getPhotoFromUser(@PathVariable int id) {
+        return employeeService.getEmployeePhoto(id);
+    }
 }

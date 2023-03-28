@@ -1,16 +1,13 @@
 package com.example.demowithtests.domain;
 
-import com.example.demowithtests.util.PhotoUrl;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -23,15 +20,10 @@ public class Photo {
 
     private LocalDateTime addDate = LocalDateTime.now();
 
-    private String description;
+    @Enumerated(EnumType.STRING)
+    private PhotoType photoType;
 
-    private String cameraType;
-
-    @NotNull
-    @PhotoUrl
-    private String photoUrl;
-
-    private boolean isDeleted = Boolean.FALSE;
-
-    private boolean isMain = Boolean.TRUE;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] image;
 }

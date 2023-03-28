@@ -1,6 +1,6 @@
 package com.example.demowithtests.util.validator;
 
-import com.example.demowithtests.util.PhotoUrl;
+import com.example.demowithtests.util.validator.annotations.PhotoUrl;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

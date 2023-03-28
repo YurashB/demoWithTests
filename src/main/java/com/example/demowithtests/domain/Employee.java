@@ -19,7 +19,7 @@ import java.util.Set;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
@@ -45,4 +45,18 @@ public class Employee {
 
     private Boolean isDeleted = Boolean.FALSE;
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", country='" + country + '\'' +
+                ", email='" + email + '\'' +
+                ", addresses=" + addresses +
+                ", gender=" + gender +
+                ", identifier='" + identifier + '\'' +
+                ", photos=" + photos +
+                ", isDeleted=" + isDeleted +
+                '}';
+    }
 }

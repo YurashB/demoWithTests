@@ -1,4 +1,4 @@
-package com.example.demowithtests.util;
+package com.example.demowithtests.util.validator.annotations;
 
 import com.example.demowithtests.util.validator.PhotoUrlValidator;
 
