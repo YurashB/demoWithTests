@@ -50,4 +50,6 @@ public interface EmployeeService {
 
     PhotoDto getEmployeePhoto(int employeeId);
 
+    EmployeeDto addPassportToEmployee(Integer passportId, Integer employeeId);
+
 }

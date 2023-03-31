@@ -5,6 +5,7 @@ import com.example.demowithtests.util.annotation.EmployeeIdentifier;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "Name may not be null")
     private String name;
 
     @EmployeeCountry
@@ -45,18 +47,8 @@ public class Employee {
 
     private Boolean isDeleted = Boolean.FALSE;
 
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", country='" + country + '\'' +
-                ", email='" + email + '\'' +
-                ", addresses=" + addresses +
-                ", gender=" + gender +
-                ", identifier='" + identifier + '\'' +
-                ", photos=" + photos +
-                ", isDeleted=" + isDeleted +
-                '}';
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
+    private Passport passport;
+
 }

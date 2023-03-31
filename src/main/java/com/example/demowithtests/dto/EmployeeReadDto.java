@@ -1,6 +1,7 @@
 package com.example.demowithtests.dto;
 
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.Passport;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.util.annotation.EmployeeIdentifier;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +15,6 @@ import java.util.Set;
 @Setter
 public class EmployeeReadDto {
 
-    @NotNull(message = "Name may not be null")
     @Size(min = 2, max = 32, message = "Name must be between 2 and 32 characters long")
     @Schema(description = "Name of an employee.", example = "Billy", required = true)
     public String name;
@@ -22,7 +22,6 @@ public class EmployeeReadDto {
     public String country;
 
     @Email
-    @NotNull
     public String email;
 
     public Set<AddressDto> addresses = new HashSet<>();
@@ -33,5 +32,7 @@ public class EmployeeReadDto {
     public String identifier;
 
     public Photo photo;
+
+    public Passport passport;
 
 }

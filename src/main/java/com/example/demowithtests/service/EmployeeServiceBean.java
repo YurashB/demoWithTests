@@ -1,13 +1,16 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Passport;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.domain.PhotoType;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.repository.PassportRepository;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.util.config.mapstruct.PhotoMapper;
+import com.example.demowithtests.util.exception.PassportHasUserException;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
@@ -17,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
@@ -33,7 +35,7 @@ public class EmployeeServiceBean implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final PhotoMapper photoMapper;
     private final EmployeeRepository employeeRepository;
-
+    private final PassportRepository passportRepository;
 
     @Override
     public Employee create(Employee employee) {
@@ -42,7 +44,7 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<EmployeeDto> getAll() {
-        return employeeMapper.ToDtoList(employeeRepository.findAll());
+        return employeeMapper.toDtoList(employeeRepository.findAll());
     }
 
     @Override
@@ -50,7 +52,7 @@ public class EmployeeServiceBean implements EmployeeService {
         // log.debug("getAllWithPagination() - start: pageable = {}", pageable);
         Page<Employee> list = employeeRepository.findAll(pageable);
         // log.debug("getAllWithPagination() - end: list = {}", list);
-        return list.map(employeeMapper::ToDto);
+        return list.map(employeeMapper::toDto);
     }
 
     @Override
@@ -65,12 +67,12 @@ public class EmployeeServiceBean implements EmployeeService {
             throw new EntityNotFoundException("User try to access to deleted employee with id: " + id
                     + " where isDeleted field is true");
         }
-        return employeeMapper.ToDto(employee);
+        return employeeMapper.toDto(employee);
     }
 
     @Override
     public EmployeeDto updateById(Integer id, Employee employee) {
-        return employeeMapper.ToDto(employeeRepository.findById(id)
+        return employeeMapper.toDto(employeeRepository.findById(id)
                 .map(entity -> {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
@@ -103,7 +105,7 @@ public class EmployeeServiceBean implements EmployeeService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
         // fetch the page object by additionally passing pageable with the filters
         Page<Employee> list = employeeRepository.findByCountryContaining(country, pageable);
-        return list.map(employeeMapper::ToDto);
+        return list.map(employeeMapper::toDto);
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
@@ -171,7 +173,7 @@ public class EmployeeServiceBean implements EmployeeService {
             }
         }
 
-        return employeeMapper.ToDtoList(employeeWithExpiredPhotos);
+        return employeeMapper.toDtoList(employeeWithExpiredPhotos);
     }
 
     @Override
@@ -188,7 +190,7 @@ public class EmployeeServiceBean implements EmployeeService {
 
             employee.getPhotos().add(photo);
             Employee save = employeeRepository.save(employee);
-            return employeeMapper.ToDto(save);
+            return employeeMapper.toDto(save);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("Something go wrong when add photo");
@@ -208,5 +210,20 @@ public class EmployeeServiceBean implements EmployeeService {
             throw new ResourceNotFoundException("There is no any photo in employee with id: " + employeeId);
         }
 
+    }
+
+    @Override
+    public EmployeeDto addPassportToEmployee(Integer passportId, Integer employeeId) {
+        Passport passport = passportRepository.findById(passportId)
+                .orElseThrow(() -> new ResourceNotFoundException("Passport with id" + passportId + " was not found"));
+        if (passport.getEmployee() != null) {
+            throw new PassportHasUserException();
+        }
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee with id" + employeeId + " was not found"));
+        employee.setPassport(passport);
+        employeeRepository.addPassportToEmployee(employeeId, passport);
+        return employeeMapper.toDto(employee);
     }
 }

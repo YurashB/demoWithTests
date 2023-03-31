@@ -4,9 +4,11 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "photos")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

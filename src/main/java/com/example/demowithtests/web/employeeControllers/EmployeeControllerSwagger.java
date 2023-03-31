@@ -1,4 +1,4 @@
-package com.example.demowithtests.web;
+package com.example.demowithtests.web.employeeControllers;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
@@ -120,4 +120,11 @@ public interface EmployeeControllerSwagger extends EmployeeController {
             @ApiResponse(responseCode = "200", description = "OK."),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. There is no  employee with id")})
     PhotoDto getPhotoFromUser(int id);
+
+    @Override
+    @Operation(summary = "Endpoint to add passport to employee", description = "add passport to employee", tags = {"Employee"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK."),
+            @ApiResponse(responseCode = "405", description = "Can`t add passport to user because passport have owner")})
+    EmployeeDto addPassportToEmployee(int passportId, int userId);
 }

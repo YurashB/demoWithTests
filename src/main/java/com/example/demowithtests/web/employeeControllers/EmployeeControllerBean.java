@@ -1,4 +1,4 @@
-package com.example.demowithtests.web;
+package com.example.demowithtests.web.employeeControllers;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
@@ -25,7 +25,6 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@Tag(name = "Employee", description = "Employee API")
 public class EmployeeControllerBean implements EmployeeControllerSwagger {
 
     private final EmployeeService employeeService;
@@ -36,7 +35,7 @@ public class EmployeeControllerBean implements EmployeeControllerSwagger {
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
 
         var employee = employeeMapper.toModel(requestForSave);
-        var dto = employeeMapper.ToDto(employeeService.create(employee));
+        var dto = employeeMapper.toDto(employeeService.create(employee));
 
         return dto;
     }
@@ -129,5 +128,11 @@ public class EmployeeControllerBean implements EmployeeControllerSwagger {
     @ResponseStatus(HttpStatus.OK)
     public PhotoDto getPhotoFromUser(@PathVariable int id) {
         return employeeService.getEmployeePhoto(id);
+    }
+
+    @PutMapping("/users/{userId}/passport/{passportId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeDto addPassportToEmployee(@PathVariable int passportId, @PathVariable int userId) {
+        return employeeService.addPassportToEmployee(passportId, userId);
     }
 }

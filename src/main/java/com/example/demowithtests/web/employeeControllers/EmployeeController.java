@@ -1,10 +1,11 @@
-package com.example.demowithtests.web;
+package com.example.demowithtests.web.employeeControllers;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public interface EmployeeController {
 
     EmployeeDto addNewPhotoToUser(int id, MultipartFile requestPhoto);
 
-
     PhotoDto getPhotoFromUser(int id);
+
+    EmployeeDto addPassportToEmployee( int passportId, int userId);
 }

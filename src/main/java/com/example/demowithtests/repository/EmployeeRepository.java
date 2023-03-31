@@ -1,12 +1,15 @@
 package com.example.demowithtests.repository;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Passport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -14,6 +17,10 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+    @Transactional
+    @Modifying
+    @Query("update Employee e set e.passport = ?2 where e.id = ?1")
+    void addPassportToEmployee(Integer employeeId, Passport passport);
 
     Employee findByName(String name);
 
@@ -44,4 +51,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "where e.name = :name and a.city in :cities " +
             "order by e.name asc")
     List<Employee> findByCityListAndName(@Param("cities")Collection<String> cities, @Param("name")String name);
+
+
 }
