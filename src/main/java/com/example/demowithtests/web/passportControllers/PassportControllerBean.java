@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,5 +49,12 @@ public class PassportControllerBean implements PassportControllerSwagger{
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removePassportById(@PathVariable Integer id) {
         passportService.removeById(id);
+    }
+
+    @Override
+    @PostMapping("/passports/generate/5")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PassportResponseDto> generateFiveFreePassports() {
+        return passportService.generateFreePassports();
     }
 }

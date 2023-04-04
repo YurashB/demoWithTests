@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class EmployeeServiceBean implements EmployeeService {
     private final PhotoMapper photoMapper;
     private final EmployeeRepository employeeRepository;
     private final PassportRepository passportRepository;
+    private final PassportService passportService;
 
     @Override
     public Employee create(Employee employee) {
@@ -213,17 +215,16 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto addPassportToEmployee(Integer passportId, Integer employeeId) {
-        Passport passport = passportRepository.findById(passportId)
-                .orElseThrow(() -> new ResourceNotFoundException("Passport with id" + passportId + " was not found"));
-        if (passport.getEmployee() != null) {
-            throw new PassportHasUserException();
-        }
-
+    public EmployeeDto addPassportToEmployee(LocalDate dateOfBirth, Integer employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee with id" + employeeId + " was not found"));
-        employee.setPassport(passport);
-        employeeRepository.addPassportToEmployee(employeeId, passport);
+
+        Passport freePassport = passportService.getFree();
+        freePassport.setDateOfBirth(dateOfBirth);
+        freePassport.setName(employee.getName());
+        freePassport.setIsFree(Boolean.FALSE);
+        employee.setPassport(freePassport);
+        employeeRepository.addPassportToEmployee(employeeId, freePassport);
         return employeeMapper.toDto(employee);
     }
 }

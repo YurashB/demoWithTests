@@ -5,7 +5,6 @@ import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,9 +130,9 @@ public class EmployeeControllerBean implements EmployeeControllerSwagger {
         return employeeService.getEmployeePhoto(id);
     }
 
-    @PutMapping("/users/{userId}/passport/{passportId}")
+    @PutMapping("/users/{userId}/passport")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto addPassportToEmployee(@PathVariable int passportId, @PathVariable int userId) {
-        return employeeService.addPassportToEmployee(passportId, userId);
+    public EmployeeDto addPassportToEmployee(@PathVariable int userId, @RequestParam String dateOfBirth) {
+        return employeeService.addPassportToEmployee(LocalDate.parse(dateOfBirth), userId);
     }
 }

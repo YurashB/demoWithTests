@@ -19,17 +19,18 @@ public class Passport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull(message = "Name may not be null")
     private String name;
 
-    @NotNull(message = "Date of Birth may not be null")
     private LocalDate dateOfBirth;
 
     private String serialNumber;
 
-    @NotNull(message = "Expire date may not be null")
-    private LocalDate expireDate;
+    private LocalDate expireDate = LocalDate.now().plusYears(5);
 
     @OneToOne(mappedBy = "passport")
     private Employee employee;
+
+    private Boolean isFree = Boolean.TRUE;
+
+    private Boolean isDeleted = Boolean.FALSE;
 }

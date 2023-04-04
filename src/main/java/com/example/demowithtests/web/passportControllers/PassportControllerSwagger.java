@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import java.util.List;
+
 public interface PassportControllerSwagger extends PassportController {
     @Override
     @Operation(summary = "Endpoint to add a new passport.", description = "Create request to add a new passport.", tags = {"Passport"})
@@ -39,4 +41,12 @@ public interface PassportControllerSwagger extends PassportController {
             @ApiResponse(responseCode = "200", description = "OK. passport was deleted"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified passport request not found.")})
     void removePassportById(Integer id);
+
+
+    @Override
+    @Operation(summary = "Endpoint to generate 5 passport", description = "Generate 5 passports", tags = {"Passport"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK. passport was generated"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified passport request not found.")})
+    List<PassportResponseDto> generateFiveFreePassports();
 }

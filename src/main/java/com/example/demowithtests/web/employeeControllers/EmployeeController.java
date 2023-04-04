@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +48,5 @@ public interface EmployeeController {
 
     PhotoDto getPhotoFromUser(int id);
 
-    EmployeeDto addPassportToEmployee( int passportId, int userId);
+    EmployeeDto addPassportToEmployee(int userId, String dateOfBirth);
 }

@@ -3,6 +3,8 @@ package com.example.demowithtests.web.passportControllers;
 import com.example.demowithtests.dto.PassportRequestDto;
 import com.example.demowithtests.dto.PassportResponseDto;
 
+import java.util.List;
+
 public interface PassportController {
     PassportResponseDto savePassport(PassportRequestDto requestForSave);
 
@@ -11,4 +13,6 @@ public interface PassportController {
     PassportResponseDto getPassportById(Integer id);
 
     void removePassportById(Integer id);
+
+    public List<PassportResponseDto> generateFiveFreePassports();
 }

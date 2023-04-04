@@ -14,4 +14,8 @@ public interface PassportService {
     PassportResponseDto updateById(Integer id, PassportRequestDto plane);
 
     PassportResponseDto getById(Integer id);
+
+    List<PassportResponseDto> generateFreePassports();
+
+    public Passport getFree();
 }

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,11 @@ public class PassportServiceBean implements PassportService {
 
     @Override
     public void removeById(Integer id) {
-        passportRepository.deleteById(id);
+        Passport passport = passportRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Passport with id " + id + " not found"));
+
+        passport.setIsDeleted(Boolean.FALSE);
+        passportRepository.save(passport);
     }
 
     @Override
@@ -61,5 +66,24 @@ public class PassportServiceBean implements PassportService {
             passportWithGeneratedSerialNumber = passportRepository.findBySerialNumber(serialNumber);
         } while (passportWithGeneratedSerialNumber.isPresent());
         return serialNumber;
+    }
+
+    @Override
+    public List<PassportResponseDto> generateFreePassports() {
+        ArrayList<Passport> passports = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Passport passport = new Passport();
+            passport.setSerialNumber(getRandomSerialNumber());
+            passports.add(passport);
+        }
+        return passportMapper.toListResponseDto(passportRepository.saveAll(passports));
+    }
+
+    @Override
+    public Passport getFree() {
+        return passportRepository.findAll().stream()
+                .filter(e -> (e.getIsDeleted() == null || !e.getIsDeleted()))
+                .filter(Passport::getIsFree)
+                .findFirst().orElseThrow(() -> (new ResourceNotFoundException("Free Passport entity not found")));
     }
 }

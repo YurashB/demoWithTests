@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,5 +127,5 @@ public interface EmployeeControllerSwagger extends EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK."),
             @ApiResponse(responseCode = "405", description = "Can`t add passport to user because passport have owner")})
-    EmployeeDto addPassportToEmployee(int passportId, int userId);
+    EmployeeDto addPassportToEmployee(int userId, String dateOfBirth);
 }
