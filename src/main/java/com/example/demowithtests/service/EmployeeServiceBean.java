@@ -224,6 +224,7 @@ public class EmployeeServiceBean implements EmployeeService {
         freePassport.setName(employee.getName());
         freePassport.setIsFree(Boolean.FALSE);
         employee.setPassport(freePassport);
+        passportRepository.save(freePassport);
         employeeRepository.addPassportToEmployee(employeeId, freePassport);
         return employeeMapper.toDto(employee);
     }

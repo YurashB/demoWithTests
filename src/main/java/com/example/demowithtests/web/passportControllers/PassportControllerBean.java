@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class PassportControllerBean implements PassportControllerSwagger{
+public class PassportControllerBean implements PassportControllerSwagger {
 
     private final PassportService passportService;
 
@@ -23,7 +23,7 @@ public class PassportControllerBean implements PassportControllerSwagger{
     @PostMapping("/passports")
     @ResponseStatus(HttpStatus.CREATED)
     public PassportResponseDto savePassport(@RequestBody PassportRequestDto requestForSave) {
-        log.info("start method savePassport with PassportRequestDto" + requestForSave.toString() );
+        log.info("start method savePassport with PassportRequestDto" + requestForSave.toString());
         return passportService.create(requestForSave);
     }
 
@@ -56,5 +56,12 @@ public class PassportControllerBean implements PassportControllerSwagger{
     @ResponseStatus(HttpStatus.OK)
     public List<PassportResponseDto> generateFiveFreePassports() {
         return passportService.generateFreePassports();
+    }
+
+    @Override
+    @PatchMapping("/passports/{id}/new")
+    @ResponseStatus(HttpStatus.OK)
+    public PassportResponseDto addNewActivePassport(@PathVariable("id") Integer prevPassportId, @RequestParam String prevPassportStatus) {
+        return passportService.addNewActivePassport(prevPassportId, prevPassportStatus);
     }
 }

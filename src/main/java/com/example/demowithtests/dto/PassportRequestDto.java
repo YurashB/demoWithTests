@@ -1,5 +1,7 @@
 package com.example.demowithtests.dto;
 
+import com.example.demowithtests.domain.Passport;
+import com.example.demowithtests.domain.PassportStatus;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -13,4 +15,5 @@ public class PassportRequestDto {
     public String name;
     public LocalDate dateOfBirth;
     public LocalDate expireDate;
+    public PassportStatus status;
 }

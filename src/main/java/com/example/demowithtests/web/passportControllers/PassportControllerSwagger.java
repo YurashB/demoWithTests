@@ -49,4 +49,7 @@ public interface PassportControllerSwagger extends PassportController {
             @ApiResponse(responseCode = "200", description = "OK. passport was generated"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified passport request not found.")})
     List<PassportResponseDto> generateFiveFreePassports();
+
+    @Override
+    PassportResponseDto addNewActivePassport(Integer prevPassportId, String prevPassportStatus);
 }

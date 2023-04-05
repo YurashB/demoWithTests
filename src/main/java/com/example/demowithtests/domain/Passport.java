@@ -33,4 +33,12 @@ public class Passport {
     private Boolean isFree = Boolean.TRUE;
 
     private Boolean isDeleted = Boolean.FALSE;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PassportStatus status = PassportStatus.ACTIVE;
+
+    @OneToOne
+    @JoinColumn(name = "prev_passport_id", referencedColumnName = "id")
+    private Passport prevPassport;
 }

@@ -1,6 +1,7 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Passport;
+import com.example.demowithtests.domain.PassportStatus;
 import com.example.demowithtests.dto.PassportRequestDto;
 import com.example.demowithtests.dto.PassportResponseDto;
 
@@ -17,5 +18,7 @@ public interface PassportService {
 
     List<PassportResponseDto> generateFreePassports();
 
-    public Passport getFree();
+    Passport getFree();
+
+    PassportResponseDto addNewActivePassport(Integer prevPassportId, String prevPassportStatus);
 }

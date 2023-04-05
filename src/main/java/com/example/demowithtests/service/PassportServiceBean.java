@@ -1,8 +1,10 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Passport;
+import com.example.demowithtests.domain.PassportStatus;
 import com.example.demowithtests.dto.PassportRequestDto;
 import com.example.demowithtests.dto.PassportResponseDto;
+import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.repository.PassportRepository;
 import com.example.demowithtests.util.config.mapstruct.PassportMapper;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class PassportServiceBean implements PassportService {
     private final PassportRepository passportRepository;
     private final PassportMapper passportMapper;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public PassportResponseDto create(PassportRequestDto passportRequestDto) {
@@ -85,5 +88,33 @@ public class PassportServiceBean implements PassportService {
                 .filter(e -> (e.getIsDeleted() == null || !e.getIsDeleted()))
                 .filter(Passport::getIsFree)
                 .findFirst().orElseThrow(() -> (new ResourceNotFoundException("Free Passport entity not found")));
+    }
+
+    @Override
+    public PassportResponseDto addNewActivePassport(Integer prevPassportId, String prevPassportStatus) {
+        Passport oldPassport = passportRepository.findById(prevPassportId)
+                .filter(passport -> !passport.getIsDeleted())
+                .filter(passport -> !passport.getIsFree())
+                .orElseThrow(() -> new EntityNotFoundException("Passport not found with id = " + prevPassportId));
+
+        PassportStatus oldPassportStatus = PassportStatus.valueOf(prevPassportStatus.toUpperCase());
+
+        oldPassport.setStatus(oldPassportStatus);
+        oldPassport.setIsDeleted(Boolean.TRUE);
+        oldPassport.setIsFree(Boolean.FALSE);
+
+        Passport newPassport = new Passport();
+        newPassport.setIsFree(Boolean.FALSE);
+        newPassport.setName(oldPassport.getEmployee().getName());
+        newPassport.setDateOfBirth(oldPassport.getDateOfBirth());
+        newPassport.setPrevPassport(oldPassport);
+        newPassport.setEmployee(oldPassport.getEmployee());
+        newPassport.setStatus(PassportStatus.ACTIVE);
+        newPassport.setSerialNumber(oldPassport.getSerialNumber());
+
+        passportRepository.save(oldPassport);
+        passportRepository.save(newPassport);
+        employeeRepository.addPassportToEmployee(oldPassport.getEmployee().getId(), newPassport);
+        return passportMapper.toResponseDto(newPassport);
     }
 }

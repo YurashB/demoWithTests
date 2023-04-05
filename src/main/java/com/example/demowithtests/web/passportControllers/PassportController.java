@@ -14,5 +14,8 @@ public interface PassportController {
 
     void removePassportById(Integer id);
 
-    public List<PassportResponseDto> generateFiveFreePassports();
+    List<PassportResponseDto> generateFiveFreePassports();
+
+    PassportResponseDto addNewActivePassport(Integer prevPassportId, String prevPassportStatus);
+
 }
