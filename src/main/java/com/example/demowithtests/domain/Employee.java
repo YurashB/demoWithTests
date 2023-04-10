@@ -51,4 +51,7 @@ public class Employee {
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
 
+    @OneToMany(mappedBy = "employee")
+    private Set<EmployeeCabinetRelation> cabinets = new HashSet<>();
+
 }

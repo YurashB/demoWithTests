@@ -5,7 +5,6 @@ import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.PhotoDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -47,5 +46,5 @@ public interface EmployeeController {
 
     PhotoDto getPhotoFromUser(int id);
 
-    EmployeeDto addPassportToEmployee( int passportId, int userId);
+    EmployeeDto addPassportToEmployee(int passportId, int userId);
 }

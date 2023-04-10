@@ -12,7 +12,7 @@ import java.util.List;
 public interface EmployeeMapper {
 
     @Mapping(source = "addresses", target = "addresses")
-     EmployeeDto toDto(Employee employee);
+    EmployeeDto toDto(Employee employee);
 
     Employee toModel(EmployeeDto employeeDto);
 

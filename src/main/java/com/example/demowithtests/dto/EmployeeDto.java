@@ -1,5 +1,6 @@
 package com.example.demowithtests.dto;
 
+import com.example.demowithtests.domain.EmployeeCabinetRelation;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.domain.Passport;
 import com.example.demowithtests.util.annotation.EmployeeIdentifier;
@@ -33,5 +34,6 @@ public class EmployeeDto {
     public Set<PhotoDto> photos = new HashSet<>();
 
     public Passport passport;
+
 
 }
