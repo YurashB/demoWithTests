@@ -1,4 +1,3 @@
-# Spring Boot configuration
 spring:
   # Database
   datasource:
@@ -6,6 +5,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/demoWithTests
     username: postgres
     password: password
+
   # JPA properties
   jpa:
     hibernate:
@@ -15,20 +15,25 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     #open-in-view: false
     #generate-ddl: true
+
+  #Flyway
   flyway:
     #    locations: filesystem:.\src\main\resources\db\migration
     enabled: false
     #    clean-disabled: true
     baseline-on-migrate: true
+
 #  security:
 #    user:
 #      name: admin
 #      password: admin
+
 #MultipartSize
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+
 # Logger configuration
 logging:
   pattern:
@@ -36,9 +41,11 @@ logging:
   level:
     org.springframework: debug
     org.hibernate: debug
+
 # Server configuration
 server:
-  port: 8087 #set your port
+  port: 8087
+
 # Swagger configuration
 springdoc:
   swagger-ui:
