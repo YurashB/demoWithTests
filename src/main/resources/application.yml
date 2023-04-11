@@ -9,7 +9,7 @@ spring:
   # JPA properties
   jpa:
     hibernate:
-      ddl-auto: update # When you launch the application for the first time - switch "none" at "create"
+      ddl-auto: validate # When you launch the application for the first time - switch "none" at "create"
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -18,17 +18,22 @@ spring:
 
   #Flyway
   flyway:
-    #    locations: filesystem:.\src\main\resources\db\migration
-    enabled: false
-    #    clean-disabled: true
+    driverClassName: org.postgresql.Driver
+    user: postgres
+    password: password
+    url: jdbc:postgresql://localhost:5432/demoWithTests
+    schemas: public
+    enabled: true
     baseline-on-migrate: true
 
-#  security:
-#    user:
-#      name: admin
-#      password: admin
 
-#MultipartSize
+
+  #  security:
+  #    user:
+  #      name: admin
+  #      password: admin
+
+  #MultipartSize
   servlet:
     multipart:
       max-file-size: 5MB

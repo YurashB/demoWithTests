@@ -1,23 +1,71 @@
+create table passports
+(
+    id               serial
+        primary key,
+    date_of_birth    date,
+    expire_date      date,
+    name             varchar(255),
+    serial_number    varchar(255),
+    is_free          boolean,
+    is_deleted       boolean,
+    prev_passport_id integer
+        constraint passports_passports_id_fk
+            references passports,
+    status           varchar
+);
+
+alter table passports
+    owner to postgres;
+
 create table users
 (
-    id         integer primary key not null,
-    name       character varying,
-    email      character varying,
-    country    character varying,
-    is_deleted boolean
+    id          integer default nextval('users_id_seq1'::regclass) not null
+        primary key,
+    country     varchar(255),
+    email       varchar(255),
+    name        varchar(255),
+    gender      varchar(255),
+    identifier  varchar(255),
+    is_deleted  boolean,
+    passport_id integer
+        constraint users_passports_id_fk
+            references passports
 );
-create unique index users_id_uindex on users using btree (id);
+
+alter table users
+    owner to postgres;
 
 create table addresses
 (
-    id                 bigint primary key not null,
+    id                 bigint not null
+        primary key,
     address_has_active boolean,
-    city               character varying(255),
-    country            character varying(255),
-    street             character varying(255),
-    employee_id        integer,
-    foreign key (employee_id) references users (id)
+    city               varchar(255),
+    country            varchar(255),
+    street             varchar(255),
+    employee_id        integer
+        constraint addresses_users_id_fk
+            references users
 );
+
+alter table addresses
+    owner to postgres;
+
+create table photos
+(
+    id          integer default nextval('photo_id_seq'::regclass) not null
+        constraint photo_pkey
+            primary key,
+    add_date    timestamp,
+    image       bytea,
+    photo_type  varchar(255),
+    employee_id integer
+        constraint photos_users_id_fk
+            references users
+);
+
+alter table photos
+    owner to postgres;
 
 
 

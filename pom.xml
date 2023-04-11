@@ -96,28 +96,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.1.214</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/dev.akkinoc.spring.boot/orika-spring-boot-starter -->
-        <dependency>
-            <groupId>dev.akkinoc.spring.boot</groupId>
-            <artifactId>orika-spring-boot-starter</artifactId>
-            <version>2.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>ma.glasnost.orika</groupId>
-            <artifactId>orika-core</artifactId>
-            <version>1.5.4</version>
-            <scope>compile</scope>
         </dependency>
         <!-- swagger -->
         <dependency>
@@ -130,13 +111,20 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.3.1</version>
+            <version>9.8.1</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -152,11 +140,17 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>8.4.1</version>
-            </plugin>-->
+                <version>9.8.1</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/demoWithTests</url>
+                    <user>postgres</user>
+                    <password>password</password>
+                    <schemas>public</schemas>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -180,5 +174,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
