@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 @Builder
+@ToString
 public class Passport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

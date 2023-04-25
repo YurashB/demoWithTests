@@ -1,4 +1,4 @@
-package com.example.demowithtests;
+package com.example.demowithtests.employee;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.repository.EmployeeRepository;
@@ -26,7 +26,7 @@ public class RepositoryTests {
     @Rollback(value = false)
     public void saveEmployeeTest() {
 
-        Employee employee = Employee.builder().name("Mark").country("England").build();
+        Employee employee = Employee.builder().name("Mark").country("England").identifier("XX0000XX").build();
 
         employeeRepository.save(employee);
 
