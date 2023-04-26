@@ -19,7 +19,7 @@ alter table passports
 
 create table users
 (
-    id          integer default nextval('users_id_seq1'::regclass) not null
+    id          serial
         primary key,
     country     varchar(255),
     email       varchar(255),
@@ -53,7 +53,7 @@ alter table addresses
 
 create table photos
 (
-    id          integer default nextval('photo_id_seq'::regclass) not null
+    id          serial
         constraint photo_pkey
             primary key,
     add_date    timestamp,
