@@ -1,9 +1,13 @@
-package com.example.demowithtests;
+package com.example.demowithtests.employee;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.repository.Repository;
-import com.example.demowithtests.service.Service;
-import com.example.demowithtests.service.ServiceBean;
+import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.service.EmployeeServiceBean;
+import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
+import com.example.demowithtests.util.config.mapstruct.PassportMapper;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -15,6 +19,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -24,22 +29,25 @@ import static org.mockito.Mockito.when;
 public class ServiceTests {
 
     @Mock
-    private Repository repository;
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
-    private ServiceBean service;
+    private EmployeeServiceBean service;
+
+    @Mock
+    private EmployeeMapper employeeMapper;
 
     @Test
     public void whenSaveEmployee_shouldReturnEmployee() {
         Employee employee = new Employee();
         employee.setName("Mark");
 
-        when(repository.save(ArgumentMatchers.any(Employee.class))).thenReturn(employee);
+        when(employeeRepository.save(ArgumentMatchers.any(Employee.class))).thenReturn(employee);
 
         Employee created = service.create(employee);
 
         assertThat(created.getName()).isSameAs(employee.getName());
-        verify(repository).save(employee);
+        verify(employeeRepository).save(employee);
     }
 
     @Test
@@ -47,13 +55,18 @@ public class ServiceTests {
         Employee employee = new Employee();
         employee.setId(88);
 
-        when(repository.findById(employee.getId())).thenReturn(Optional.of(employee));
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.id = employee.getId();
 
-        Employee expected = service.getById(employee.getId());
+        when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
+        when(employeeMapper.toDto(any(Employee.class))).thenReturn(employeeDto);
 
-        assertThat(expected).isSameAs(employee);
-        verify(repository).findById(employee.getId());
+        EmployeeDto expected = service.getById(employee.getId());
+
+        assertThat(expected.id).isSameAs(employee.getId());
+        verify(employeeRepository).findById(employee.getId());
     }
+
 
     @Test(expected = EntityNotFoundException.class)
     public void should_throw_exception_when_employee_doesnt_exist() {
@@ -61,7 +74,7 @@ public class ServiceTests {
         employee.setId(89);
         employee.setName("Mark");
 
-        given(repository.findById(anyInt())).willReturn(Optional.empty());
+        given(employeeRepository.findById(anyInt())).willReturn(Optional.empty());
         service.getById(employee.getId());
     }
 }

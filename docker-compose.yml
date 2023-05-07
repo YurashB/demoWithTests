@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  app:
+    image: openjdk:11
+    container_name: app
+    ports:
+      - "8087:8087"
+    volumes:
+      - ./target/demoWithTests-0.0.1-SNAPSHOT.jar:/target/demo-with-tests-0.0.1-SNAPSHOT.jar
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/demoWithTests
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/demoWithTests
+      SPRING_FLYWAY_USER: postgres
+      SPRING_FLYWAY_PASSWORD: password
+    depends_on:
+      - postgres
+      - flyway
+    command: java -jar /target/demo-with-tests-0.0.1-SNAPSHOT.jar
+    healthcheck:
+      test: curl -f http://localhost:8087/profile || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 2
+
+
+  postgres:
+    image: postgres:14.6
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=demoWithTests
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
+
+  flyway:
+    image: boxfuse/flyway:latest-alpine
+    command: -url=jdbc:postgresql://postgres:5432/demoWithTests -schemas=public -user=postgres -password=password
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    restart: on-failure
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:

@@ -1,56 +1,54 @@
 package com.example.demowithtests.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import com.example.demowithtests.util.annotation.EmployeeCountry;
+import com.example.demowithtests.util.annotation.EmployeeIdentifier;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
+@ToString
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "Name may not be null")
     private String name;
+
+    @EmployeeCountry
     private String country;
+
     private String email;
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private Set<Address> addresses = new HashSet<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-    public String getName() {
-        return name;
-    }
+    @EmployeeIdentifier
+    private String identifier;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private Set<Photo> photos = new HashSet<>();
 
-    public String getCountry() {
-        return country;
-    }
+    private Boolean isDeleted = Boolean.FALSE;
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
+    private Passport passport;
 
 }
