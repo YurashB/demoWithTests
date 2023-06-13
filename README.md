@@ -1,18 +1,18 @@
 # Spring REST demo app 
 
-Spring Rest demo backend application for employee managment with different technologies 
+Spring Rest demo backend application for employee management with different technologies
 
 ## What's inside 
 This project is based on the Spring Boot and uses these technologies:
-- Framework: Spring 5 (SpringBoot 2, Spring Test, Spring Data)
+- Framework: Spring 5 (Spring Boot 2, Spring Test, Spring Data)
 - DB: PostgreSQL, Flyway
 - Other: MapStruct, OpenApi, Lombok, Docker
 
 ## Getting Started
-To start service you need JDK 11 and PostgreSQL installed. Than configure the foloving
+To start service, you need JDK 11 and PostgreSQL installed. Than configure thefollowing
 
 ### PostgreSQL configuration
-Configire PostgreSQL with your settings in application.yml:
+Configure PostgreSQL with your settings in application.yml:
 ```
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -23,7 +23,7 @@ Configire PostgreSQL with your settings in application.yml:
 ```
 
 ### Flyway configuration
-Configire Flyway with your settings in application.yml:
+Configure Flyway with your settings in application.yml:
 ```
   flyway:
     driverClassName: org.postgresql.Driver
@@ -37,7 +37,7 @@ Configire Flyway with your settings in application.yml:
 
 ### Running application 
 After db configuration
-1. run the comand ```mvn clean install```
+1. run the command ```mvn clean install```
 2. Start your project with your IDE or ``` mvn spring-boot:run ```
 3. The application can be accessed via http://localhost:8087/api/
 
@@ -46,7 +46,7 @@ To run the application using Docker, follow these steps:
 ```
 docker-compose up
 ```
-Than the application can be accessed via http://localhost:8087/api/ .And if you want to stop container run
+Then the application can be accessed via http://localhost:8087/api/ . And if you want to stop container run
 ```
 docker-compose down
 ```
