@@ -1,4 +1,4 @@
-create table passports
+create table if not exists passports
 (
     id               serial
         primary key,
@@ -17,7 +17,7 @@ create table passports
 alter table passports
     owner to postgres;
 
-create table users
+create table if not exists users
 (
     id          serial
         primary key,
@@ -35,7 +35,7 @@ create table users
 alter table users
     owner to postgres;
 
-create table addresses
+create table if not exists addresses
 (
     id                 bigint not null
         primary key,
@@ -51,7 +51,7 @@ create table addresses
 alter table addresses
     owner to postgres;
 
-create table photos
+create table if not exists photos
 (
     id          serial
         constraint photo_pkey

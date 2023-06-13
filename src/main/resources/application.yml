@@ -3,6 +3,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/demoWithTests
+    schema: public
     username: postgres
     password: password
 
@@ -26,12 +27,11 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
-
-
-  #  security:
-  #    user:
-  #      name: admin
-  #      password: admin
+    #security
+    security:
+      user:
+        name: admin
+        password: admin
 
   #MultipartSize
   servlet:
